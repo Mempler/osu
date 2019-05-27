@@ -88,7 +88,7 @@ namespace osu.Game.Online.API
             if (checkAndScheduleFailure())
                 return;
 
-            API.Schedule(delegate { Success?.Invoke(); });
+            Success?.Invoke();
         }
 
         public void Cancel() => Fail(new OperationCanceledException(@"Request cancelled"));
