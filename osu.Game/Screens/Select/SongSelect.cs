@@ -171,11 +171,6 @@ namespace osu.Game.Screens.Select
                                 Height = FilterControl.HEIGHT,
                                 FilterChanged = c => Carousel.Filter(c),
                                 Background = { Width = 2 },
-                                Exit = () =>
-                                {
-                                    if (this.IsCurrentScreen())
-                                        this.Exit();
-                                },
                             },
                         }
                     },
@@ -223,7 +218,7 @@ namespace osu.Game.Screens.Select
                 });
             }
 
-            BeatmapDetails.Leaderboard.ScoreSelected += s => this.Push(new SoloResults(s));
+            BeatmapDetails.Leaderboard.ScoreSelected += score => this.Push(new SoloResults(score));
         }
 
         [BackgroundDependencyLoader(true)]
@@ -490,6 +485,7 @@ namespace osu.Game.Screens.Select
             BeatmapDetails.Leaderboard.RefreshScores();
 
             Beatmap.Value.Track.Looping = true;
+            music?.ResetTrackAdjustments();
 
             if (Beatmap != null && !Beatmap.Value.BeatmapSetInfo.DeletePending)
             {
