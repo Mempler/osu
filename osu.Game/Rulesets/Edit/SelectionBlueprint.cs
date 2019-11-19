@@ -3,10 +3,13 @@
 
 using System;
 using osu.Framework;
+using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Primitives;
+using osu.Framework.Graphics.UserInterface;
 using osu.Game.Graphics.UserInterface;
+using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osuTK;
 
@@ -35,6 +38,9 @@ namespace osu.Game.Rulesets.Edit
         protected override bool ShouldBeAlive => (DrawableObject.IsAlive && DrawableObject.IsPresent) || State == SelectionState.Selected;
         public override bool HandlePositionalInput => ShouldBeAlive;
         public override bool RemoveWhenNotAlive => false;
+
+        [Resolved(CanBeNull = true)]
+        private HitObjectComposer composer { get; set; }
 
         protected SelectionBlueprint(DrawableHitObject drawableObject)
         {
@@ -77,6 +83,9 @@ namespace osu.Game.Rulesets.Edit
             }
         }
 
+        // When not selected, input is only required for the blueprint itself to receive IsHovering
+        protected override bool ShouldBeConsideredForInput(Drawable child) => State == SelectionState.Selected;
+
         /// <summary>
         /// Selects this <see cref="SelectionBlueprint"/>, causing it to become visible.
         /// </summary>
@@ -89,7 +98,17 @@ namespace osu.Game.Rulesets.Edit
 
         public bool IsSelected => State == SelectionState.Selected;
 
+        /// <summary>
+        /// Updates the <see cref="HitObject"/>, invoking <see cref="HitObject.ApplyDefaults"/> and re-processing the beatmap.
+        /// </summary>
+        protected void UpdateHitObject() => composer?.UpdateHitObject(DrawableObject.HitObject);
+
         public override bool ReceivePositionalInputAt(Vector2 screenSpacePos) => DrawableObject.ReceivePositionalInputAt(screenSpacePos);
+
+        /// <summary>
+        /// The <see cref="MenuItem"/>s to be displayed in the context menu for this <see cref="SelectionBlueprint"/>.
+        /// </summary>
+        public virtual MenuItem[] ContextMenuItems => Array.Empty<MenuItem>();
 
         /// <summary>
         /// The screen-space point that causes this <see cref="SelectionBlueprint"/> to be selected.

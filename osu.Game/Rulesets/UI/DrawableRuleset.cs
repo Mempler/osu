@@ -239,10 +239,16 @@ namespace osu.Game.Rulesets.UI
                 continueResume();
         }
 
+        public override void CancelResume()
+        {
+            // called if the user pauses while the resume overlay is open
+            ResumeOverlay?.Hide();
+        }
+
         /// <summary>
-        /// Creates and adds the visual representation of a <see cref="TObject"/> to this <see cref="DrawableRuleset{TObject}"/>.
+        /// Creates and adds the visual representation of a <typeparamref name="TObject"/> to this <see cref="DrawableRuleset{TObject}"/>.
         /// </summary>
-        /// <param name="hitObject">The <see cref="TObject"/> to add the visual representation for.</param>
+        /// <param name="hitObject">The <typeparamref name="TObject"/> to add the visual representation for.</param>
         private void addHitObject(TObject hitObject)
         {
             var drawableObject = CreateDrawableRepresentation(hitObject);
@@ -430,8 +436,10 @@ namespace osu.Game.Rulesets.UI
                         return h.HitWindows;
 
                     foreach (var n in h.NestedHitObjects)
+                    {
                         if (h.HitWindows.WindowFor(HitResult.Miss) > 0)
                             return n.HitWindows;
+                    }
                 }
 
                 return null;
@@ -452,6 +460,11 @@ namespace osu.Game.Rulesets.UI
         /// </summary>
         /// <param name="continueResume">The action to run when resuming is to be completed.</param>
         public abstract void RequestResume(Action continueResume);
+
+        /// <summary>
+        /// Invoked when the user requests to pause while the resume overlay is active.
+        /// </summary>
+        public abstract void CancelResume();
 
         /// <summary>
         /// Create a <see cref="ScoreProcessor"/> for the associated ruleset  and link with this

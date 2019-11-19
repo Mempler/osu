@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using Newtonsoft.Json;
 using osu.Framework.IO.Network;
 using osu.Framework.Logging;
 
@@ -107,6 +108,22 @@ namespace osu.Game.Online.API
             cancelled = true;
             WebRequest?.Abort();
 
+            string responseString = WebRequest?.ResponseString;
+
+            if (!string.IsNullOrEmpty(responseString))
+            {
+                try
+                {
+                    // attempt to decode a displayable error string.
+                    var error = JsonConvert.DeserializeObject<DisplayableError>(responseString);
+                    if (error != null)
+                        e = new Exception(error.ErrorMessage, e);
+                }
+                catch
+                {
+                }
+            }
+
             Logger.Log($@"Failing request {this} ({e})", LoggingTarget.Network);
             pendingFailure = () => Failure?.Invoke(e);
             checkAndScheduleFailure();
@@ -123,6 +140,12 @@ namespace osu.Game.Online.API
             API.Schedule(pendingFailure);
             pendingFailure = null;
             return true;
+        }
+
+        private class DisplayableError
+        {
+            [JsonProperty("error")]
+            public string ErrorMessage;
         }
     }
 
