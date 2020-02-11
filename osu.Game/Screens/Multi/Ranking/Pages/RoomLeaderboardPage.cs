@@ -87,13 +87,15 @@ namespace osu.Game.Screens.Multi.Ranking.Pages
             rankText.AddText(name + "\n", white);
             rankText.AddText("You are placed ", gray);
 
-            int index = scores.IndexOf(new APIUserScoreAggregate { User = Score.User }, new FuncEqualityComparer<APIUserScoreAggregate>((s1, s2) => s1.User.Id.Equals(s2.User.Id)));
+            //int index = scores.IndexOf(new APIUserScoreAggregate { User = Score.User }, new FuncEqualityComparer<APIUserScoreAggregate>((s1, s2) => s1.User.Id.Equals(s2.User.Id)));
 
+            /*
             rankText.AddText($"#{index + 1} ", s =>
             {
                 s.Font = s.Font.With(Typeface.Exo, weight: FontWeight.Bold);
                 s.Colour = colours.YellowDark;
             });
+            */
 
             rankText.AddText("in the room!", gray);
         }
