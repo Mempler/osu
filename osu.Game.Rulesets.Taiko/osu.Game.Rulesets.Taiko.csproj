@@ -1,6 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup Label="Project">
+<<<<<<< HEAD
     <TargetFramework>netcoreapp3.0</TargetFramework>
+=======
+    <TargetFramework>netstandard2.1</TargetFramework>
+>>>>>>> 804d210250a7b2b430da59fab7f55a6e2cd40394
     <OutputType>Library</OutputType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Description>bash the drum. to the beat.</Description>

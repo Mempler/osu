@@ -16,11 +16,7 @@ namespace osu.Game.Graphics.UserInterface
         /// <summary>
         /// How many leading zeroes the counter has.
         /// </summary>
-        public uint LeadingZeroes
-        {
-            get;
-            protected set;
-        }
+        public uint LeadingZeroes { get; }
 
         /// <summary>
         /// Displays score.
@@ -55,7 +51,7 @@ namespace osu.Game.Graphics.UserInterface
 
         public override void Increment(double amount)
         {
-            Current.Value = Current.Value + amount;
+            Current.Value += amount;
         }
     }
 }
