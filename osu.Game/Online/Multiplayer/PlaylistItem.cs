@@ -70,7 +70,7 @@ namespace osu.Game.Online.Multiplayer
         {
             // If we don't have an api beatmap, the request occurred as a result of room creation, so we can query the local beatmap instead
             // Todo: Is this a bug? Room creation only returns the beatmap ID
-            Beatmap = apiBeatmap == null ? beatmaps.QueryBeatmap(b => b.OnlineBeatmapID == BeatmapID) : apiBeatmap.ToBeatmap(rulesets);
+            Beatmap = apiBeatmap == null ? beatmaps.QueryBeatmap(b => b.OnlineBeatmapID == BeatmapID) : apiBeatmap.ToBeatmap();
             Ruleset = rulesets.GetRuleset(RulesetID);
 
             Ruleset rulesetInstance = Ruleset.CreateInstance();

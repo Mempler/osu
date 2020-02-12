@@ -5,6 +5,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/pisstaube/osu</RepositoryUrl>
+    <PackageVersion>0.0.1</PackageVersion>
   </PropertyGroup>
   <PropertyGroup Label="Nuget">
     <Title>osu!</Title>

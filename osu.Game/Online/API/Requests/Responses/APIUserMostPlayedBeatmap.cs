@@ -23,7 +23,7 @@ namespace osu.Game.Online.API.Requests.Responses
 
         public BeatmapInfo GetBeatmapInfo(RulesetStore rulesets)
         {
-            BeatmapSetInfo setInfo = beatmapSet.ToBeatmapSet(rulesets);
+            BeatmapSetInfo setInfo = beatmapSet.ToBeatmapSet();
             beatmap.BeatmapSet = setInfo;
             beatmap.Metadata = setInfo.Metadata;
             return beatmap;

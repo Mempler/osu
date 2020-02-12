@@ -264,7 +264,7 @@ namespace osu.Game.Overlays
             {
                 Task.Run(() =>
                 {
-                    var sets = response.BeatmapSets.Select(r => r.ToBeatmapSet(rulesets)).ToList();
+                    var sets = response.BeatmapSets.Select(r => r.ToBeatmapSet()).ToList();
 
                     // may not need scheduling; loads async internally.
                     Schedule(() =>

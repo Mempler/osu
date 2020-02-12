@@ -33,7 +33,7 @@ namespace osu.Game.Overlays.Profile.Sections.Beatmaps
 
         protected override Drawable CreateDrawableItem(APIBeatmapSet model) => !model.OnlineBeatmapSetID.HasValue
             ? null
-            : new DirectGridPanel(model.ToBeatmapSet(Rulesets))
+            : new DirectGridPanel(model.ToBeatmapSet())
             {
                 Anchor = Anchor.TopCentre,
                 Origin = Anchor.TopCentre,

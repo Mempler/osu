@@ -207,7 +207,7 @@ namespace osu.Game.Screens.Select
                         //the beatmap has been changed since we started the lookup.
                         return;
 
-                    var b = res.ToBeatmap(rulesets);
+                    var b = res.ToBeatmap();
 
                     if (requestedBeatmap.BeatmapSet == null)
                         requestedBeatmap.BeatmapSet = b.BeatmapSet;
