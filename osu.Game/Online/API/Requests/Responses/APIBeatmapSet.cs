@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using osu.Game.Beatmaps;
-using osu.Game.Rulesets;
 
 namespace osu.Game.Online.API.Requests.Responses
 {
@@ -78,7 +77,7 @@ namespace osu.Game.Online.API.Requests.Responses
         [JsonProperty(@"beatmaps")]
         private IEnumerable<APIBeatmap> beatmaps { get; set; }
 
-        public BeatmapSetInfo ToBeatmapSet(RulesetStore rulesets)
+        public BeatmapSetInfo ToBeatmapSet()
         {
             return new BeatmapSetInfo
             {
@@ -104,7 +103,7 @@ namespace osu.Game.Online.API.Requests.Responses
                     Genre = genre,
                     Language = language
                 },
-                Beatmaps = beatmaps?.Select(b => b.ToBeatmap(rulesets)).ToList(),
+                Beatmaps = beatmaps?.Select(b => b.ToBeatmap()).ToList(),
             };
         }
     }

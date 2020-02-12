@@ -61,14 +61,14 @@ namespace osu.Game.Online.API.Requests.Responses
         [JsonProperty(@"failtimes")]
         private BeatmapMetrics metrics { get; set; }
 
-        public BeatmapInfo ToBeatmap(RulesetStore rulesets)
+        public BeatmapInfo ToBeatmap()
         {
-            var set = BeatmapSet?.ToBeatmapSet(rulesets);
+            var set = BeatmapSet?.ToBeatmapSet();
 
             return new BeatmapInfo
             {
                 Metadata = set?.Metadata ?? this,
-                Ruleset = rulesets.GetRuleset(ruleset),
+                Ruleset = new RulesetInfo { ID = ruleset },
                 StarDifficulty = starDifficulty,
                 OnlineBeatmapID = OnlineBeatmapID,
                 Version = version,
