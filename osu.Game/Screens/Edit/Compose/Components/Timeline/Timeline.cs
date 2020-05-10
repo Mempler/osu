@@ -24,7 +24,8 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
         public readonly Bindable<bool> WaveformVisible = new Bindable<bool>();
         public readonly IBindable<WorkingBeatmap> Beatmap = new Bindable<WorkingBeatmap>();
 
-        private IAdjustableClock adjustableClock;
+        [Resolved]
+        private IAdjustableClock adjustableClock { get; set; }
 
         public Timeline()
         {
@@ -36,10 +37,8 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
         private WaveformGraph waveform;
 
         [BackgroundDependencyLoader]
-        private void load(IBindable<WorkingBeatmap> beatmap, IAdjustableClock adjustableClock, OsuColour colours)
+        private void load(IBindable<WorkingBeatmap> beatmap, OsuColour colours)
         {
-            this.adjustableClock = adjustableClock;
-
             Add(waveform = new WaveformGraph
             {
                 RelativeSizeAxes = Axes.Both,
@@ -51,7 +50,7 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
             });
 
             // We don't want the centre marker to scroll
-            AddInternal(new CentreMarker());
+            AddInternal(new CentreMarker { Depth = float.MaxValue });
 
             WaveformVisible.ValueChanged += visible => waveform.FadeTo(visible.NewValue ? 1 : 0, 200, Easing.OutQuint);
 
@@ -61,9 +60,12 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
                 waveform.Waveform = b.NewValue.Waveform;
                 track = b.NewValue.Track;
 
-                MinZoom = getZoomLevelForVisibleMilliseconds(10000);
-                MaxZoom = getZoomLevelForVisibleMilliseconds(500);
-                Zoom = getZoomLevelForVisibleMilliseconds(2000);
+                if (track.Length > 0)
+                {
+                    MaxZoom = getZoomLevelForVisibleMilliseconds(500);
+                    MinZoom = getZoomLevelForVisibleMilliseconds(10000);
+                    Zoom = getZoomLevelForVisibleMilliseconds(2000);
+                }
             }, true);
         }
 
@@ -136,7 +138,7 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
 
         private void scrollToTrackTime()
         {
-            if (!track.IsLoaded)
+            if (!track.IsLoaded || track.Length == 0)
                 return;
 
             ScrollTo((float)(adjustableClock.CurrentTime / track.Length) * Content.DrawWidth, false);

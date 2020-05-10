@@ -8,6 +8,7 @@ using osu.Framework.Logging;
 using osu.Game.Audio;
 using osu.Game.Beatmaps.ControlPoints;
 using osu.Game.IO;
+using osu.Game.Rulesets.Objects.Legacy;
 using osuTK.Graphics;
 
 namespace osu.Game.Beatmaps.Formats
@@ -41,6 +42,7 @@ namespace osu.Game.Beatmaps.Formats
                         section = Section.None;
                     }
 
+                    OnBeginNewSection(section);
                     continue;
                 }
 
@@ -57,6 +59,14 @@ namespace osu.Game.Beatmaps.Formats
 
         protected virtual bool ShouldSkipLine(string line) => string.IsNullOrWhiteSpace(line) || line.AsSpan().TrimStart().StartsWith("//".AsSpan(), StringComparison.Ordinal);
 
+        /// <summary>
+        /// Invoked when a new <see cref="Section"/> has been entered.
+        /// </summary>
+        /// <param name="section">The entered <see cref="Section"/>.</param>
+        protected virtual void OnBeginNewSection(Section section)
+        {
+        }
+
         protected virtual void ParseLine(T output, Section section, string line)
         {
             line = StripComments(line);
@@ -64,7 +74,7 @@ namespace osu.Game.Beatmaps.Formats
             switch (section)
             {
                 case Section.Colours:
-                    handleColours(output, line);
+                    HandleColours(output, line);
                     return;
             }
         }
@@ -78,7 +88,7 @@ namespace osu.Game.Beatmaps.Formats
             return line;
         }
 
-        private void handleColours(T output, string line)
+        protected void HandleColours<TModel>(TModel output, string line)
         {
             var pair = SplitKeyVal(line);
 
@@ -139,7 +149,9 @@ namespace osu.Game.Beatmaps.Formats
             Colours,
             HitObjects,
             Variables,
-            Fonts
+            Fonts,
+            CatchTheBeat,
+            Mania,
         }
 
         internal class LegacyDifficultyControlPoint : DifficultyControlPoint
@@ -158,15 +170,19 @@ namespace osu.Game.Beatmaps.Formats
             {
                 var baseInfo = base.ApplyTo(hitSampleInfo);
 
-                if (string.IsNullOrEmpty(baseInfo.Suffix) && CustomSampleBank > 1)
-                    baseInfo.Suffix = CustomSampleBank.ToString();
+                if (baseInfo is ConvertHitObjectParser.LegacyHitSampleInfo legacy
+                    && legacy.CustomSampleBank == 0)
+                {
+                    legacy.CustomSampleBank = CustomSampleBank;
+                }
 
                 return baseInfo;
             }
 
-            public override bool EquivalentTo(ControlPoint other) =>
-                base.EquivalentTo(other) && other is LegacySampleControlPoint otherTyped &&
-                CustomSampleBank == otherTyped.CustomSampleBank;
+            public override bool IsRedundant(ControlPoint existing)
+                => base.IsRedundant(existing)
+                   && existing is LegacySampleControlPoint existingSample
+                   && CustomSampleBank == existingSample.CustomSampleBank;
         }
     }
 }

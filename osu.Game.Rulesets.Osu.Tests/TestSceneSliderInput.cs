@@ -32,7 +32,7 @@ namespace osu.Game.Rulesets.Osu.Tests
             typeof(SliderBall),
             typeof(DrawableSlider),
             typeof(DrawableSliderTick),
-            typeof(DrawableRepeatPoint),
+            typeof(DrawableSliderRepeat),
             typeof(DrawableOsuHitObject),
             typeof(DrawableSliderHead),
             typeof(DrawableSliderTail),
@@ -47,7 +47,6 @@ namespace osu.Game.Rulesets.Osu.Tests
         private const double time_slider_end = 4000;
 
         private List<JudgementResult> judgementResults;
-        private bool allJudgedFired;
 
         /// <summary>
         /// Scenario:
@@ -327,7 +326,7 @@ namespace osu.Game.Rulesets.Osu.Tests
             AddAssert("Tracking dropped", assertMidSliderJudgementFail);
         }
 
-        private bool assertGreatJudge() => judgementResults.Last().Type == HitResult.Great;
+        private bool assertGreatJudge() => judgementResults.Any() && judgementResults.All(t => t.Type == HitResult.Great);
 
         private bool assertHeadMissTailTracked() => judgementResults[^2].Type == HitResult.Great && judgementResults.First().Type == HitResult.Miss;
 
@@ -375,20 +374,15 @@ namespace osu.Game.Rulesets.Osu.Tests
                     {
                         if (currentPlayer == p) judgementResults.Add(result);
                     };
-                    p.ScoreProcessor.AllJudged += () =>
-                    {
-                        if (currentPlayer == p) allJudgedFired = true;
-                    };
                 };
 
                 LoadScreen(currentPlayer = p);
-                allJudgedFired = false;
                 judgementResults = new List<JudgementResult>();
             });
 
             AddUntilStep("Beatmap at 0", () => Beatmap.Value.Track.CurrentTime == 0);
             AddUntilStep("Wait until player is loaded", () => currentPlayer.IsCurrentScreen());
-            AddUntilStep("Wait for all judged", () => allJudgedFired);
+            AddUntilStep("Wait for completion", () => currentPlayer.ScoreProcessor.HasCompleted.Value);
         }
 
         private class ScoreAccessibleReplayPlayer : ReplayPlayer
