@@ -144,7 +144,7 @@ namespace osu.Game.Overlays.BeatmapListing
 
         private void onSearchFinished(SearchBeatmapSetsResponse response)
         {
-            var beatmaps = response.BeatmapSets.Select(r => r.ToBeatmapSet(rulesets)).ToList();
+            var beatmaps = response.BeatmapSets.Select(r => r.ToBeatmapSet()).ToList();
 
             searchControl.BeatmapSet = response.Total == 0 ? null : beatmaps.First();
 

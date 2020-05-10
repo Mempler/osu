@@ -81,7 +81,7 @@ namespace osu.Game.Tests.Visual.UserInterface
                     Child = background = new TestUpdateableBeatmapBackgroundSprite
                     {
                         RelativeSizeAxes = Axes.Both,
-                        Beatmap = { Value = new BeatmapInfo { BeatmapSet = req.Result?.ToBeatmapSet(rulesets) } }
+                        Beatmap = { Value = new BeatmapInfo { BeatmapSet = req.Result?.ToBeatmapSet() } }
                     };
                 });
 
